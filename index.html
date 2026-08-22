@@ -33,6 +33,9 @@
   .b-retest { background:#1d3a2a; color:var(--green); }
   .b-done { background:#1d2a22; color:var(--green); }
   .b-drop { background:#262b3a; color:var(--gray); }
+  .b-p0 { background:#5c1f1a; color:#ff8a7a; }
+  .b-p1 { background:#3a2d14; color:var(--amber); }
+  .b-p2 { background:#262b3a; color:var(--gray); }
   .commit { font-family:monospace; font-size:11px; color:var(--blue); }
   .hero-tag { background:#262b3a; padding:1px 6px; border-radius:6px; font-size:11px; }
   .note { color:var(--dim); font-size:12px; }
@@ -53,73 +56,73 @@
 // ===== 看板数据（由 AI 登记时同步更新本块） =====
 const BOARD = {
   open: [
-    {id:1, hero:'小满', hid:30, skill:'MR', desc:'海鸥没有 → MR 释放失败', note:'海鸥(召唤物)未生成，MR 依赖海鸥目标'},
-    {id:2, hero:'诺斯', hid:25, skill:'SP', desc:'瞬移到场地中央', note:'SP 位移目标点错误'},
-    {id:3, hero:'诺斯', hid:25, skill:'R', desc:'镜头回到场地中央', note:'R 镜头控制异常'},
-    {id:4, hero:'琳', hid:76, skill:'R', desc:'镜头异常', note:'R 镜头控制异常'},
-    {id:5, hero:'琳', hid:76, skill:'SP', desc:'没有召回/加载冰墙', note:'SP 冰墙未生成/召回逻辑缺失'},
-    {id:6, hero:'赤', hid:8, skill:'Q', desc:'镜头异常', note:'Q 镜头控制异常'},
-    {id:7, hero:'苏洛', hid:3, skill:'R', desc:'镜头异常', note:'R 镜头控制异常'},
-    {id:8, hero:'唐小藏', hid:12, skill:'SP', desc:'屏障没有召唤加载出来', note:'SP 屏障实体未生成'},
-    {id:9, hero:'全英雄', hid:'', skill:'BUFF', desc:'所有BUFF特效没有出现', note:'技能BUFF、装备BUFF都是'},
-    {id:10, hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', note:'扣血异常'},
-    {id:11, hero:'唐小藏', hid:12, skill:'ML', desc:'弹射额外效果没有', note:'看技能描述'},
-    {id:12, hero:'唐小藏', hid:12, skill:'MR', desc:'丢失持续紧箍敌人效果', note:'紧箍效果缺失'},
-    {id:13, hero:'龛', hid:13, skill:'E', desc:'丢失摆放陷阱沼泽', note:'E技能陷阱沼泽未生成'},
-    {id:14, hero:'龛', hid:13, skill:'攻击', desc:'丢失攻击他人中毒效果', note:'中毒效果缺失'},
-    {id:15, hero:'玖味', hid:15, skill:'SP', desc:'丢食物没有', note:'SP丢食物无表现'},
-    {id:16, hero:'爵士', hid:19, skill:'Q', desc:'无法放置音符', note:'Q音符放置失败'},
-    {id:17, hero:'爵士', hid:19, skill:'M3', desc:'滚轮CD异常久', note:'M3滚轮CD异常'},
-    {id:18, hero:'亚瑟王', hid:22, skill:'SP', desc:'变成了主动技能，不对', note:'看技能描述，应为特殊机制'},
-    {id:19, hero:'亚瑟王', hid:22, skill:'MR/E', desc:'丢失特殊效果', note:'看技能描述'},
-    {id:20, hero:'亚斯塔路', hid:24, skill:'E', desc:'路障丢失物理阻挡效果', note:'路障无物理阻挡'},
-    {id:21, hero:'亚斯塔路', hid:24, skill:'R', desc:'无法正常"装人"', note:'R技能装人异常'},
-    {id:22, hero:'钟馗', hid:28, skill:'技能', desc:'击落的魂珠落地直接消失', note:'魂珠无存续'},
-    {id:23, hero:'钟馗', hid:28, skill:'SP', desc:'永远只回到场地中央，非技能描述原逻辑', note:'SP位移逻辑错误'},
-    {id:24, hero:'伊希切尔', hid:29, skill:'R', desc:'选左边恶魔攻击技能牌丢失伤害', note:'伤害丢失'},
-    {id:25, hero:'玲珑', hid:32, skill:'MR', desc:'陷阱丢失', note:'陷阱未生成'},
-    {id:26, hero:'巴哈', hid:33, skill:'E', desc:'陷阱丢失', note:'陷阱未生成'},
-    {id:27, hero:'哲罗', hid:34, skill:'SP', desc:'ML左键连招后镜头异常', note:'镜头异常'},
-    {id:28, hero:'阿兹瓦多', hid:36, skill:'R', desc:'镜头异常', note:'镜头异常'},
-    {id:29, hero:'阿兹瓦多', hid:36, skill:'SP', desc:'镜头异常', note:'镜头异常'},
-    {id:30, hero:'全英雄', hid:'', skill:'回血', desc:'自动回血逻辑丢失', note:'全局回血'},
-    {id:31, hero:'阿兹瓦多', hid:36, skill:'技能', desc:'技能使用扣血设定丢失', note:'扣血设定'},
-    {id:32, hero:'阿兹瓦多', hid:36, skill:'F', desc:'回血设定丢失', note:'回血设定'},
-    {id:33, hero:'犹', hid:37, skill:'Q', desc:'月灵阵丢失', note:'陷阱未生成'},
-    {id:34, hero:'犹', hid:37, skill:'SP', desc:'忍犬逻辑不正常', note:'看技能设定描述'},
-    {id:35, hero:'犹', hid:37, skill:'MR', desc:'羽月符丢出后消失', note:'投掷物无存续'},
-    {id:36, hero:'阿和', hid:39, skill:'R', desc:'会让阿和移动，不正常', note:'R位移异常'},
-    {id:37, hero:'吉格', hid:40, skill:'攻击', desc:'累计敌方眩晕值逻辑丢失', note:'眩晕累计'},
-    {id:38, hero:'吉格', hid:40, skill:'MR', desc:'第一次无击中音效，CD好第二次出不来', note:'MR异常'},
-    {id:39, hero:'玛姬', hid:42, skill:'R', desc:'魔法盒无法召唤，无法后续控制移动', note:'召唤物未生成'},
-    {id:40, hero:'惠美', hid:43, skill:'E', desc:'鲨鱼陷阱无法召唤', note:'陷阱未生成'},
-    {id:41, hero:'莉奥拉', hid:44, skill:'SP', desc:'防护力场无法召唤', note:'力场未生成'},
-    {id:42, hero:'莉奥拉', hid:44, skill:'E', desc:'升空高度异常，重力过重', note:'重力异常(全局)'},
-    {id:43, hero:'原子', hid:45, skill:'SP', desc:'起飞正常但快速下降，重力过重', note:'重力异常(全局)'},
-    {id:44, hero:'原子', hid:45, skill:'R', desc:'起飞正常但快速下降，重力过重', note:'重力异常(全局)'},
-    {id:45, hero:'阿努比斯', hid:49, skill:'E', desc:'无法穿墙移动到目标边上', note:'看技能原描述'},
-    {id:46, hero:'阿努比斯', hid:49, skill:'E', desc:'镜头异常', note:'镜头异常'},
-    {id:47, hero:'斯芬克斯', hid:50, skill:'R', desc:'丢失向前跳跃/伤害/变身逻辑', note:'R逻辑缺失'},
-    {id:48, hero:'刚玉', hid:11, skill:'R', desc:'丢失怒气值设定逻辑', note:'怒气设定'},
-    {id:49, hero:'秋山', hid:51, skill:'R', desc:'无法挑飞敌人，R无后续逻辑', note:'挑飞缺失'},
-    {id:50, hero:'巴鲁波', hid:60, skill:'MR', desc:'召唤的小巴鲁波AI丢失', note:'召唤AI'},
-    {id:51, hero:'巴鲁波', hid:60, skill:'E', desc:'召唤物丢失(治疗附近队友/陷阱)', note:'召唤物未生成'},
-    {id:52, hero:'克拉拉', hid:61, skill:'蛇杖', desc:'蛇杖AI丢失', note:'召唤AI'},
-    {id:53, hero:'闲青山', hid:62, skill:'SP', desc:'飞行下降速度异常过快', note:'重力异常(全局)'},
-    {id:54, hero:'闲青山', hid:62, skill:'身后字', desc:'身后字丢失，关系R和T技能逻辑', note:'特效/逻辑缺失'},
-    {id:55, hero:'卓尔', hid:63, skill:'MR', desc:'镜头异常', note:'镜头异常'},
-    {id:56, hero:'莉莉娅', hid:65, skill:'SP', desc:'逻辑异常，疑似BUFF，BUFF表现也丢失', note:'BUFF丢失'},
-    {id:57, hero:'拓仓', hid:66, skill:'E', desc:'挑飞敌人下落速度异常过快', note:'重力异常(全局)'},
-    {id:58, hero:'贝狄威尔', hid:69, skill:'R', desc:'镜头异常，可能第一次正常后面不正常', note:'镜头异常'},
-    {id:59, hero:'菲欧娜', hid:71, skill:'R', desc:'恢复效果丢失', note:'恢复丢失'},
-    {id:60, hero:'夜皇后', hid:72, skill:'R', desc:'无法召唤虚空子弹(台球)', note:'召唤物未生成'},
-    {id:61, hero:'布伦希尔德', hid:73, skill:'MR', desc:'无法放置溜溜球，无法用SP回溜溜球地点', note:'放置物未生成'},
-    {id:62, hero:'菲丽丝', hid:74, skill:'E/MR', desc:'陷阱布置全部丢失', note:'陷阱未生成'},
-    {id:63, hero:'南', hid:75, skill:'Q', desc:'无法用二段移动到Q技能位置', note:'Q二段缺失'},
-    {id:64, hero:'南', hid:75, skill:'E', desc:'屏障无法召唤', note:'屏障未生成'},
-    {id:65, hero:'南', hid:75, skill:'SP', desc:'无法正常添加BUFF', note:'BUFF丢失'},
-    {id:66, hero:'莲', hid:77, skill:'R', desc:'BUFF丢失', note:'BUFF丢失'},
-    {id:67, hero:'全英雄', hid:'', skill:'时装', desc:'默认时装/未说明时装的英雄会随机给一个时装', note:'应改为默认时装'},
+    {id:1, pri:1, hero:'小满', hid:30, skill:'MR', desc:'海鸥没有 → MR 释放失败', note:'海鸥(召唤物)未生成，MR 依赖海鸥目标'},
+    {id:2, pri:1, hero:'诺斯', hid:25, skill:'SP', desc:'瞬移到场地中央', note:'SP 位移目标点错误'},
+    {id:3, pri:1, hero:'诺斯', hid:25, skill:'R', desc:'镜头回到场地中央', note:'R 镜头控制异常'},
+    {id:4, pri:1, hero:'琳', hid:76, skill:'R', desc:'镜头异常', note:'R 镜头控制异常'},
+    {id:5, pri:1, hero:'琳', hid:76, skill:'SP', desc:'没有召回/加载冰墙', note:'SP 冰墙未生成/召回逻辑缺失'},
+    {id:6, pri:1, hero:'赤', hid:8, skill:'Q', desc:'镜头异常', note:'Q 镜头控制异常'},
+    {id:7, pri:1, hero:'苏洛', hid:3, skill:'R', desc:'镜头异常', note:'R 镜头控制异常'},
+    {id:8, pri:1, hero:'唐小藏', hid:12, skill:'SP', desc:'屏障没有召唤加载出来', note:'SP 屏障实体未生成'},
+    {id:9, pri:0, hero:'全英雄', hid:'', skill:'BUFF', desc:'所有BUFF特效没有出现', note:'技能BUFF、装备BUFF都是'},
+    {id:10, pri:0, hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', note:'扣血异常'},
+    {id:11, pri:2, hero:'唐小藏', hid:12, skill:'ML', desc:'弹射额外效果没有', note:'看技能描述'},
+    {id:12, pri:2, hero:'唐小藏', hid:12, skill:'MR', desc:'丢失持续紧箍敌人效果', note:'紧箍效果缺失'},
+    {id:13, pri:1, hero:'龛', hid:13, skill:'E', desc:'丢失摆放陷阱沼泽', note:'E技能陷阱沼泽未生成'},
+    {id:14, pri:2, hero:'龛', hid:13, skill:'攻击', desc:'丢失攻击他人中毒效果', note:'中毒效果缺失'},
+    {id:15, pri:2, hero:'玖味', hid:15, skill:'SP', desc:'丢食物没有', note:'SP丢食物无表现'},
+    {id:16, pri:2, hero:'爵士', hid:19, skill:'Q', desc:'无法放置音符', note:'Q音符放置失败'},
+    {id:17, pri:2, hero:'爵士', hid:19, skill:'M3', desc:'滚轮CD异常久', note:'M3滚轮CD异常'},
+    {id:18, pri:2, hero:'亚瑟王', hid:22, skill:'SP', desc:'变成了主动技能，不对', note:'看技能描述，应为特殊机制'},
+    {id:19, pri:2, hero:'亚瑟王', hid:22, skill:'MR/E', desc:'丢失特殊效果', note:'看技能描述'},
+    {id:20, pri:2, hero:'亚斯塔路', hid:24, skill:'E', desc:'路障丢失物理阻挡效果', note:'路障无物理阻挡'},
+    {id:21, pri:2, hero:'亚斯塔路', hid:24, skill:'R', desc:'无法正常"装人"', note:'R技能装人异常'},
+    {id:22, pri:1, hero:'钟馗', hid:28, skill:'技能', desc:'击落的魂珠落地直接消失', note:'魂珠无存续'},
+    {id:23, pri:1, hero:'钟馗', hid:28, skill:'SP', desc:'永远只回到场地中央，非技能描述原逻辑', note:'SP位移逻辑错误'},
+    {id:24, pri:2, hero:'伊希切尔', hid:29, skill:'R', desc:'选左边恶魔攻击技能牌丢失伤害', note:'伤害丢失'},
+    {id:25, pri:1, hero:'玲珑', hid:32, skill:'MR', desc:'陷阱丢失', note:'陷阱未生成'},
+    {id:26, pri:1, hero:'巴哈', hid:33, skill:'E', desc:'陷阱丢失', note:'陷阱未生成'},
+    {id:27, pri:1, hero:'哲罗', hid:34, skill:'SP', desc:'ML左键连招后镜头异常', note:'镜头异常'},
+    {id:28, pri:1, hero:'阿兹瓦多', hid:36, skill:'R', desc:'镜头异常', note:'镜头异常'},
+    {id:29, pri:1, hero:'阿兹瓦多', hid:36, skill:'SP', desc:'镜头异常', note:'镜头异常'},
+    {id:30, pri:0, hero:'全英雄', hid:'', skill:'回血', desc:'自动回血逻辑丢失', note:'全局回血'},
+    {id:31, pri:1, hero:'阿兹瓦多', hid:36, skill:'技能', desc:'技能使用扣血设定丢失', note:'扣血设定'},
+    {id:32, pri:1, hero:'阿兹瓦多', hid:36, skill:'F', desc:'回血设定丢失', note:'回血设定'},
+    {id:33, pri:1, hero:'犹', hid:37, skill:'Q', desc:'月灵阵丢失', note:'陷阱未生成'},
+    {id:34, pri:1, hero:'犹', hid:37, skill:'SP', desc:'忍犬逻辑不正常', note:'看技能设定描述'},
+    {id:35, pri:1, hero:'犹', hid:37, skill:'MR', desc:'羽月符丢出后消失', note:'投掷物无存续'},
+    {id:36, pri:2, hero:'阿和', hid:39, skill:'R', desc:'会让阿和移动，不正常', note:'R位移异常'},
+    {id:37, pri:2, hero:'吉格', hid:40, skill:'攻击', desc:'累计敌方眩晕值逻辑丢失', note:'眩晕累计'},
+    {id:38, pri:2, hero:'吉格', hid:40, skill:'MR', desc:'第一次无击中音效，CD好第二次出不来', note:'MR异常'},
+    {id:39, pri:1, hero:'玛姬', hid:42, skill:'R', desc:'魔法盒无法召唤，无法后续控制移动', note:'召唤物未生成'},
+    {id:40, pri:1, hero:'惠美', hid:43, skill:'E', desc:'鲨鱼陷阱无法召唤', note:'陷阱未生成'},
+    {id:41, pri:1, hero:'莉奥拉', hid:44, skill:'SP', desc:'防护力场无法召唤', note:'力场未生成'},
+    {id:42, pri:0, hero:'莉奥拉', hid:44, skill:'E', desc:'升空高度异常，重力过重', note:'重力异常(全局)'},
+    {id:43, pri:0, hero:'原子', hid:45, skill:'SP', desc:'起飞正常但快速下降，重力过重', note:'重力异常(全局)'},
+    {id:44, pri:0, hero:'原子', hid:45, skill:'R', desc:'起飞正常但快速下降，重力过重', note:'重力异常(全局)'},
+    {id:45, pri:2, hero:'阿努比斯', hid:49, skill:'E', desc:'无法穿墙移动到目标边上', note:'看技能原描述'},
+    {id:46, pri:1, hero:'阿努比斯', hid:49, skill:'E', desc:'镜头异常', note:'镜头异常'},
+    {id:47, pri:2, hero:'斯芬克斯', hid:50, skill:'R', desc:'丢失向前跳跃/伤害/变身逻辑', note:'R逻辑缺失'},
+    {id:48, pri:2, hero:'刚玉', hid:11, skill:'R', desc:'丢失怒气值设定逻辑', note:'怒气设定'},
+    {id:49, pri:2, hero:'秋山', hid:51, skill:'R', desc:'无法挑飞敌人，R无后续逻辑', note:'挑飞缺失'},
+    {id:50, pri:1, hero:'巴鲁波', hid:60, skill:'MR', desc:'召唤的小巴鲁波AI丢失', note:'召唤AI'},
+    {id:51, pri:1, hero:'巴鲁波', hid:60, skill:'E', desc:'召唤物丢失(治疗附近队友/陷阱)', note:'召唤物未生成'},
+    {id:52, pri:1, hero:'克拉拉', hid:61, skill:'蛇杖', desc:'蛇杖AI丢失', note:'召唤AI'},
+    {id:53, pri:0, hero:'闲青山', hid:62, skill:'SP', desc:'飞行下降速度异常过快', note:'重力异常(全局)'},
+    {id:54, pri:2, hero:'闲青山', hid:62, skill:'身后字', desc:'身后字丢失，关系R和T技能逻辑', note:'特效/逻辑缺失'},
+    {id:55, pri:1, hero:'卓尔', hid:63, skill:'MR', desc:'镜头异常', note:'镜头异常'},
+    {id:56, pri:1, hero:'莉莉娅', hid:65, skill:'SP', desc:'逻辑异常，疑似BUFF，BUFF表现也丢失', note:'BUFF丢失'},
+    {id:57, pri:0, hero:'拓仓', hid:66, skill:'E', desc:'挑飞敌人下落速度异常过快', note:'重力异常(全局)'},
+    {id:58, pri:1, hero:'贝狄威尔', hid:69, skill:'R', desc:'镜头异常，可能第一次正常后面不正常', note:'镜头异常'},
+    {id:59, pri:1, hero:'菲欧娜', hid:71, skill:'R', desc:'恢复效果丢失', note:'恢复丢失'},
+    {id:60, pri:1, hero:'夜皇后', hid:72, skill:'R', desc:'无法召唤虚空子弹(台球)', note:'召唤物未生成'},
+    {id:61, pri:1, hero:'布伦希尔德', hid:73, skill:'MR', desc:'无法放置溜溜球，无法用SP回溜溜球地点', note:'放置物未生成'},
+    {id:62, pri:1, hero:'菲丽丝', hid:74, skill:'E/MR', desc:'陷阱布置全部丢失', note:'陷阱未生成'},
+    {id:63, pri:2, hero:'南', hid:75, skill:'Q', desc:'无法用二段移动到Q技能位置', note:'Q二段缺失'},
+    {id:64, pri:1, hero:'南', hid:75, skill:'E', desc:'屏障无法召唤', note:'屏障未生成'},
+    {id:65, pri:1, hero:'南', hid:75, skill:'SP', desc:'无法正常添加BUFF', note:'BUFF丢失'},
+    {id:66, pri:1, hero:'莲', hid:77, skill:'R', desc:'BUFF丢失', note:'BUFF丢失'},
+    {id:67, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'默认时装/未说明时装的英雄会随机给一个时装', note:'应改为默认时装'},
   ],
   done: [
     {hero:'里特', hid:18, skill:'ML', desc:'普攻丢不出投掷物', fix:'attack_volume_source_server 回推', commit:'ee5de5b'},
@@ -143,13 +146,14 @@ function badge(status) {
 
 // ===== 排序 =====
 // key: id | hero | hid | skill ; dir: 1 升序, -1 降序
-let sortState = { key: 'id', dir: 1 };
+let sortState = { key: 'pri', dir: 1 };
 
 function _heroHid(r) { return parseInt(r.hid) || 0; }
 
 function _cmp(a, b, key) {
   if (key === 'hero') return String(a.hero||'').localeCompare(String(b.hero||''), 'zh-Hans-CN') || (_heroHid(a) - _heroHid(b));
   if (key === 'hid') return _heroHid(a) - _heroHid(b);
+  if (key === 'pri') return (a.pri == null ? 9 : a.pri) - (b.pri == null ? 9 : b.pri);
   if (key === 'skill') return String(a.skill||'').localeCompare(String(b.skill||''), 'zh-Hans-CN');
   return (a.id || 0) - (b.id || 0);
 }
@@ -171,6 +175,12 @@ function thSort(key, label) {
   return '<th class="th-sort" onclick="setSort(\'' + key + '\')" title="点击排序">' + label + arrow + '</th>';
 }
 
+function priBadge(p) {
+  const map = {0:'P0', 1:'P1', 2:'P2'};
+  const cls = {0:'b-p0', 1:'b-p1', 2:'b-p2'};
+  return '<span class="badge ' + (cls[p]||'b-p2') + '">' + (map[p]||'P2') + '</span>';
+}
+
 function render() {
   const stats = document.getElementById('stats');
   stats.innerHTML =
@@ -180,9 +190,9 @@ function render() {
 
   const b = document.getElementById('board');
   let html = '<h2>未修复问题（' + BOARD.open.length + '）</h2>';
-  html += '<table><tr>' + thSort('id', '#') + thSort('hero', '英雄') + thSort('skill', '技能') + '<th>现象</th><th>状态</th><th>备注</th></tr>';
+  html += '<table><tr>' + thSort('pri', '优先') + thSort('id', '#') + thSort('hero', '英雄') + thSort('skill', '技能') + '<th>现象</th><th>状态</th><th>备注</th></tr>';
   sortRows(BOARD.open).forEach(r => {
-    html += '<tr><td>' + r.id + '</td><td>' + r.hero + ' <span class="hero-tag">' + r.hid + '</span></td>' +
+    html += '<tr><td>' + priBadge(r.pri) + '</td><td>' + r.id + '</td><td>' + r.hero + ' <span class="hero-tag">' + r.hid + '</span></td>' +
       '<td><b>' + r.skill + '</b></td><td>' + r.desc + '</td>' +
       '<td>' + badge('open') + '</td><td class="note">' + (r.note||'') + '</td></tr>';
   });
