@@ -110,6 +110,7 @@
 | 66 | 莲(77) | R | 投掷物未生成（R是弹道技能，非BUFF） | 未修 | cdata: avtype=ball, ball_model=char/heros/0001/a1.model, 无state_info；归类投掷物/召唤物未生成批次 |
 | 67 | 全英雄 | 时装 | 默认时装/未说明时装的英雄会随机给一个时装，应改为默认时装 | 未修 | 时装默认逻辑 |
 | 68 | 全英雄 | 通道 | 消息堵塞：进城时装大 bundle 灌爆可靠通道，pending 恒 100+，后续 S2C 全 defer | 已修复 | 根因=无发送窗口一把梭。稳定框架：channel.py 发送窗口(reliable_window=4)+有序队列+泵，RETX/GIVEUP/闪退/进城拥堵一起消（2026-08-22） |
+| 69 | 全英雄 | 装备 | 装备光环脚底特效（普渡天泉/凯旋之旗等13件带aura） | 正在开发 | aura机制：auras#20→set_auras→_add_aura→脚底特效(不进buff栏)；wire实测闪退，待定位auras真实fullIndex |
 
 ## 已修复
 
