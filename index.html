@@ -27,9 +27,10 @@
   td { padding:8px 10px; border-top:1px solid var(--border); font-size:13px; vertical-align:top; }
   tr:hover td { background:#1b1f2c; }
   .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; white-space:nowrap; }
-  .b-open { background:#3a1d1a; color:var(--red); }
-  .b-diag { background:#3a2d14; color:var(--amber); }
-  .b-fixing { background:#1d2a45; color:var(--blue); }
+  .b-todo { background:#262b3a; color:var(--gray); }
+  .b-idea { background:#1d2a45; color:var(--blue); }
+  .b-doing { background:#3a2d14; color:var(--amber); }
+  .b-stuck { background:#3a1d1a; color:var(--red); }
   .b-retest { background:#1d3a2a; color:var(--green); }
   .b-done { background:#1d2a22; color:var(--green); }
   .b-drop { background:#262b3a; color:var(--gray); }
@@ -46,7 +47,7 @@
 </head>
 <body>
 <h1>🐉 WildFire 问题看板 <button class="refresh" onclick="location.reload()">刷新</button></h1>
-<div class="sub">共享看板 · 你报问题 → AI 登记更新 · 数据源 docs/issues_board.md · 点击表头可按英雄/技能/编号排序</div>
+<div class="sub">共享看板 · 状态：还没做 → 有思路 → 正在开发 → 卡住了等会 → 待复测 → 已修复(+时间) · 点击表头排序</div>
 
 <div class="stats" id="stats"></div>
 <div id="board"></div>
@@ -65,7 +66,7 @@ const BOARD = {
     {id:7, pri:1, hero:'苏洛', hid:3, skill:'R', desc:'镜头异常', note:'R 镜头控制异常'},
     {id:8, pri:1, hero:'唐小藏', hid:12, skill:'SP', desc:'屏障没有召唤加载出来', note:'SP 屏障实体未生成'},
     {id:9, pri:0, hero:'全英雄', hid:'', skill:'BUFF', desc:'所有BUFF特效没有出现', note:'技能BUFF、装备BUFF都是'},
-    {id:10, pri:0, hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', note:'扣血异常'},
+    {id:10, pri:0, hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', note:'扣血异常', st:'retest'},
     {id:11, pri:2, hero:'唐小藏', hid:12, skill:'ML', desc:'弹射额外效果没有', note:'看技能描述'},
     {id:12, pri:2, hero:'唐小藏', hid:12, skill:'MR', desc:'丢失持续紧箍敌人效果', note:'紧箍效果缺失'},
     {id:13, pri:1, hero:'龛', hid:13, skill:'E', desc:'丢失摆放陷阱沼泽', note:'E技能陷阱沼泽未生成'},
@@ -125,13 +126,13 @@ const BOARD = {
     {id:67, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'默认时装/未说明时装的英雄会随机给一个时装', note:'应改为默认时装'},
   ],
   done: [
-    {hero:'里特', hid:18, skill:'ML', desc:'普攻丢不出投掷物', fix:'attack_volume_source_server 回推', commit:'ee5de5b'},
-    {hero:'里特', hid:18, skill:'ML', desc:'普攻连点被拒（CD 整除 1 秒）', fix:'used=False', commit:'d605cca'},
-    {hero:'里特', hid:18, skill:'ML', desc:'普攻间隔太快/移动取消', fix:'普攻设 CD 真实值', commit:'1d594e0'},
-    {hero:'全英雄', hid:'', skill:'技能', desc:'CD 全错（路径 bug）', fix:'parents[4] 路径修复', commit:'0d1041c'},
-    {hero:'拓仓', hid:66, skill:'R', desc:'小弟到期不消失', fix:'leaveAoI×2 VARIABLE', commit:'88a5fef'},
-    {hero:'拓仓', hid:66, skill:'R', desc:'小弟模型错', fix:'hero_type sphere_typ 反查', commit:'3c2d646'},
-    {hero:'玛姬', hid:42, skill:'大变活人', desc:'丢失变身', fix:'ct=1 controlEntity', commit:'868934f'},
+    {hero:'里特', hid:18, skill:'ML', desc:'普攻丢不出投掷物', fix:'attack_volume_source_server 回推', commit:'ee5de5b', time:'08-21 00:01'},
+    {hero:'里特', hid:18, skill:'ML', desc:'普攻连点被拒（CD 整除 1 秒）', fix:'used=False', commit:'d605cca', time:'08-21 00:35'},
+    {hero:'里特', hid:18, skill:'ML', desc:'普攻间隔太快/移动取消', fix:'普攻设 CD 真实值', commit:'1d594e0', time:'08-22 01:35'},
+    {hero:'全英雄', hid:'', skill:'技能', desc:'CD 全错（路径 bug）', fix:'parents[4] 路径修复', commit:'0d1041c', time:'08-22 01:14'},
+    {hero:'拓仓', hid:66, skill:'R', desc:'小弟到期不消失', fix:'leaveAoI×2 VARIABLE', commit:'88a5fef', time:'08-20 00:09'},
+    {hero:'拓仓', hid:66, skill:'R', desc:'小弟模型错', fix:'hero_type sphere_typ 反查', commit:'3c2d646', time:'08-20 21:27'},
+    {hero:'玛姬', hid:42, skill:'大变活人', desc:'丢失变身', fix:'ct=1 controlEntity', commit:'868934f', time:'08-20 22:03'},
   ],
   drop: [
     {hero:'里特', hid:18, skill:'ML', desc:'疯狂点击部分被拒', reason:'客户端动画 ~0.9s 资源设定（官方如此）'},
@@ -139,9 +140,9 @@ const BOARD = {
 };
 
 function badge(status) {
-  const map = {open:'未修', diag:'诊断中', fixing:'修复中', retest:'待复测', done:'已修复', drop:'已放弃'};
-  const cls = {open:'b-open', diag:'b-diag', fixing:'b-fixing', retest:'b-retest', done:'b-done', drop:'b-drop'};
-  return '<span class="badge ' + cls[status] + '">' + map[status] + '</span>';
+  const map = {todo:'还没做', idea:'有思路', doing:'正在开发', stuck:'卡住了等会', retest:'待复测', done:'已修复', drop:'已放弃'};
+  const cls = {todo:'b-todo', idea:'b-idea', doing:'b-doing', stuck:'b-stuck', retest:'b-retest', done:'b-done', drop:'b-drop'};
+  return '<span class="badge ' + (cls[status]||'b-todo') + '">' + (map[status]||'还没做') + '</span>';
 }
 
 // ===== 排序 =====
@@ -194,16 +195,17 @@ function render() {
   sortRows(BOARD.open).forEach(r => {
     html += '<tr><td>' + priBadge(r.pri) + '</td><td>' + r.id + '</td><td>' + r.hero + ' <span class="hero-tag">' + r.hid + '</span></td>' +
       '<td><b>' + r.skill + '</b></td><td>' + r.desc + '</td>' +
-      '<td>' + badge('open') + '</td><td class="note">' + (r.note||'') + '</td></tr>';
+      '<td>' + badge(r.st || 'todo') + '</td><td class="note">' + (r.note||'') + '</td></tr>';
   });
   html += '</table>';
 
   html += '<h2>已修复（' + BOARD.done.length + '）</h2>';
-  html += '<table><tr>' + thSort('hero', '英雄') + thSort('skill', '技能') + '<th>现象</th><th>修复</th><th>提交</th></tr>';
+  html += '<table><tr>' + thSort('hero', '英雄') + thSort('skill', '技能') + '<th>现象</th><th>修复</th><th>提交</th><th>完成时间</th></tr>';
   sortRows(BOARD.done).forEach(r => {
     html += '<tr><td>' + r.hero + (r.hid?' <span class="hero-tag">'+r.hid+'</span>':'') + '</td>' +
       '<td><b>' + r.skill + '</b></td><td>' + r.desc + '</td><td>' + r.fix + '</td>' +
-      '<td class="commit">' + (r.commit||'') + '</td></tr>';
+      '<td class="commit">' + (r.commit||'') + '</td>' +
+      '<td class="note">' + (r.time||'') + '</td></tr>';
   });
   html += '</table>';
 
