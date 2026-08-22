@@ -66,7 +66,6 @@ const BOARD = {
     {id:7, pri:1, hero:'苏洛', hid:3, skill:'R', desc:'镜头异常', note:'R 镜头控制异常'},
     {id:8, pri:1, hero:'唐小藏', hid:12, skill:'SP', desc:'屏障没有召唤加载出来', note:'SP 屏障实体未生成'},
     {id:9, pri:0, hero:'全英雄', hid:'', skill:'BUFF', desc:'所有BUFF特效没有出现', note:'技能BUFF、装备BUFF都是'},
-    {id:10, pri:0, hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', note:'扣血异常', st:'retest'},
     {id:11, pri:2, hero:'唐小藏', hid:12, skill:'ML', desc:'弹射额外效果没有', note:'看技能描述'},
     {id:12, pri:2, hero:'唐小藏', hid:12, skill:'MR', desc:'丢失持续紧箍敌人效果', note:'紧箍效果缺失'},
     {id:13, pri:1, hero:'龛', hid:13, skill:'E', desc:'丢失摆放陷阱沼泽', note:'E技能陷阱沼泽未生成'},
@@ -126,6 +125,7 @@ const BOARD = {
     {id:67, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'默认时装/未说明时装的英雄会随机给一个时装', note:'应改为默认时装'},
   ],
   done: [
+    {hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', fix:'移除打中木桩预约800反击（官方木桩=靶子不掉血）', commit:'072970d', time:'08-22 14:26'},
     {hero:'里特', hid:18, skill:'ML', desc:'普攻丢不出投掷物', fix:'attack_volume_source_server 回推', commit:'ee5de5b', time:'08-21 00:01'},
     {hero:'里特', hid:18, skill:'ML', desc:'普攻连点被拒（CD 整除 1 秒）', fix:'used=False', commit:'d605cca', time:'08-21 00:35'},
     {hero:'里特', hid:18, skill:'ML', desc:'普攻间隔太快/移动取消', fix:'普攻设 CD 真实值', commit:'1d594e0', time:'08-22 01:35'},
