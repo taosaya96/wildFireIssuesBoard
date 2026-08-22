@@ -65,7 +65,7 @@ const BOARD = {
     {id:6, pri:1, hero:'赤', hid:8, skill:'Q', desc:'镜头异常', note:'Q 镜头控制异常'},
     {id:7, pri:1, hero:'苏洛', hid:3, skill:'R', desc:'镜头异常', note:'R 镜头控制异常'},
     {id:8, pri:1, hero:'唐小藏', hid:12, skill:'SP', desc:'屏障没有召唤加载出来', note:'SP 屏障实体未生成'},
-    {id:9, pri:0, hero:'全英雄', hid:'', skill:'BUFF', desc:'所有BUFF特效没有出现', note:'技能BUFF、装备BUFF都是', st:'doing'},
+    {id:9, pri:0, hero:'全英雄', hid:'', skill:'BUFF', desc:'BUFF特效缺失（技能/装备）', note:'VFX走stateKeys#18→add_state_effects；stateKeys wire崩客户端→改端本地双写(已通)；装备光环是aura机制不进buff栏。余：莲R缺状态、滚轮2格、装备光环待接', st:'doing'},
     {id:11, pri:2, hero:'唐小藏', hid:12, skill:'ML', desc:'弹射额外效果没有', note:'看技能描述'},
     {id:12, pri:2, hero:'唐小藏', hid:12, skill:'MR', desc:'丢失持续紧箍敌人效果', note:'紧箍效果缺失'},
     {id:13, pri:1, hero:'龛', hid:13, skill:'E', desc:'丢失摆放陷阱沼泽', note:'E技能陷阱沼泽未生成'},
@@ -123,7 +123,7 @@ const BOARD = {
     {id:65, pri:1, hero:'南', hid:75, skill:'SP', desc:'无法正常添加BUFF', note:'BUFF丢失'},
     {id:66, pri:1, hero:'莲', hid:77, skill:'R', desc:'BUFF丢失', note:'BUFF丢失'},
     {id:67, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'默认时装/未说明时装的英雄会随机给一个时装', note:'应改为默认时装'},
-    {id:68, pri:0, hero:'全英雄', hid:'', skill:'通道', desc:'消息堵塞：进城时装大bundle灌爆可靠通道，pending恒100+，后续S2C全defer', note:'技能没反应/操作迟缓，已加wardrobe pending门闩待复测', st:'doing'},
+
   ],
   done: [
     {hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', fix:'移除打中木桩预约800反击（官方木桩=靶子不掉血）', commit:'072970d', time:'08-22 14:26'},
@@ -134,6 +134,7 @@ const BOARD = {
     {hero:'拓仓', hid:66, skill:'R', desc:'小弟到期不消失', fix:'leaveAoI×2 VARIABLE', commit:'88a5fef', time:'08-20 00:09'},
     {hero:'拓仓', hid:66, skill:'R', desc:'小弟模型错', fix:'hero_type sphere_typ 反查', commit:'3c2d646', time:'08-20 21:27'},
     {hero:'玛姬', hid:42, skill:'大变活人', desc:'丢失变身', fix:'ct=1 controlEntity', commit:'868934f', time:'08-20 22:03'},
+    {hero:'全英雄', hid:'', skill:'通道', desc:'消息堵塞：进城时装大bundle灌爆可靠通道，pending恒100+，后续S2C全defer', fix:'稳定框架：channel.py发送窗口(reliable_window=4)+有序队列+泵，RETX/GIVEUP/闪退/进城拥堵一起消', commit:'-', time:'08-22'},
   ],
   drop: [
     {hero:'里特', hid:18, skill:'ML', desc:'疯狂点击部分被拒', reason:'客户端动画 ~0.9s 资源设定（官方如此）'},
