@@ -65,7 +65,7 @@ const BOARD = {
     {id:6, pri:1, hero:'赤', hid:8, skill:'Q', desc:'镜头异常', note:'Q 镜头控制异常'},
     {id:7, pri:1, hero:'苏洛', hid:3, skill:'R', desc:'镜头异常', note:'R 镜头控制异常'},
     {id:8, pri:1, hero:'唐小藏', hid:12, skill:'SP', desc:'屏障没有召唤加载出来', note:'SP 屏障实体未生成'},
-    {id:9, pri:0, hero:'全英雄', hid:'', skill:'BUFF', desc:'BUFF特效缺失（技能/装备）', note:'VFX走stateKeys#18→add_state_effects；stateKeys wire崩客户端→改端本地双写(已通)；装备光环是aura机制不进buff栏。余：莲R缺状态、滚轮2格、装备光环待接', st:'doing'},
+    {id:9, pri:0, hero:'全英雄', hid:'', skill:'BUFF', desc:'BUFF特效缺失（技能/装备）', note:'VFX走stateKeys#18→add_state_effects；stateKeys wire崩客户端→改端本地双写(已通)；装备光环是aura机制不进buff栏。余：莲R缺状态、滚轮2格、装备光环待接', st:'stuck'},
     {id:11, pri:2, hero:'唐小藏', hid:12, skill:'ML', desc:'弹射额外效果没有', note:'看技能描述'},
     {id:12, pri:2, hero:'唐小藏', hid:12, skill:'MR', desc:'丢失持续紧箍敌人效果', note:'紧箍效果缺失'},
     {id:13, pri:1, hero:'龛', hid:13, skill:'E', desc:'丢失摆放陷阱沼泽', note:'E技能陷阱沼泽未生成'},
@@ -121,7 +121,7 @@ const BOARD = {
     {id:63, pri:2, hero:'南', hid:75, skill:'Q', desc:'无法用二段移动到Q技能位置', note:'Q二段缺失'},
     {id:64, pri:1, hero:'南', hid:75, skill:'E', desc:'屏障无法召唤', note:'屏障未生成'},
     {id:65, pri:1, hero:'南', hid:75, skill:'SP', desc:'无法正常添加BUFF', note:'BUFF丢失'},
-    {id:66, pri:1, hero:'莲', hid:77, skill:'R', desc:'BUFF丢失', note:'BUFF丢失'},
+    {id:66, pri:1, hero:'莲', hid:77, skill:'R', desc:'投掷物未生成（R是弹道技能非BUFF）', note:'cdata: avtype=ball, ball_model=char/heros/0001/a1.model, 无state_info；归类投掷物未生成'},
     {id:67, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'默认时装/未说明时装的英雄会随机给一个时装', note:'应改为默认时装'},
 
   ],

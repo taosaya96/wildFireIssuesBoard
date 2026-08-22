@@ -51,7 +51,7 @@
 | 6 | 赤(8) | Q | 镜头异常 | 未修 | Q 镜头控制异常 |
 | 7 | 苏洛(3) | R | 镜头异常 | 未修 | R 镜头控制异常 |
 | 8 | 唐小藏(12) | SP | 屏障没有召唤加载出来 | 未修 | SP 屏障实体未生成 |
-| 9 | 全英雄 | BUFF | BUFF特效缺失（技能/装备） | 正在开发 | 已逆向：VFX 走 stateKeys#18→update_stateKeys→add_state_effects(effect)；stateKeys wire 崩客户端→改端本地双写(EditorConf RX add_combat_state，已通)；装备光环是 aura 机制(set_auras→脚底特效，不进buff栏)，勿当 combat_state。余：莲R状态缺表、滚轮2格(hero未挂)、装备光环待接 |
+| 9 | 全英雄 | BUFF | BUFF特效缺失（技能/装备） | 卡住了等会 | 已逆向：VFX 走 stateKeys#18→update_stateKeys→add_state_effects(effect)；stateKeys wire 崩客户端→改端本地双写(EditorConf RX add_combat_state，已通)；装备光环是 aura 机制(set_auras→脚底特效，不进buff栏)，勿当 combat_state。余：莲R状态缺表、滚轮2格(hero未挂)、装备光环待接 |
 | 11 | 唐小藏(12) | ML | 弹射额外效果没有 | 未修 | 技能描述含弹射，需看技能描述 |
 | 12 | 唐小藏(12) | MR | 丢失将敌人持续紧箍的效果 | 未修 | 紧箍效果缺失 |
 | 13 | 龛(13) | E | 丢失摆放陷阱沼泽 | 未修 | E技能陷阱沼泽未生成 |
@@ -107,7 +107,7 @@
 | 63 | 南(75) | Q | 无法用二段移动到Q技能位置 | 未修 | Q二段缺失 |
 | 64 | 南(75) | E | 屏障无法召唤 | 未修 | 屏障未生成 |
 | 65 | 南(75) | SP | 无法正常添加BUFF | 未修 | BUFF丢失 |
-| 66 | 莲(77) | R | BUFF丢失 | 未修 | BUFF丢失 |
+| 66 | 莲(77) | R | 投掷物未生成（R是弹道技能，非BUFF） | 未修 | cdata: avtype=ball, ball_model=char/heros/0001/a1.model, 无state_info；归类投掷物/召唤物未生成批次 |
 | 67 | 全英雄 | 时装 | 默认时装/未说明时装的英雄会随机给一个时装，应改为默认时装 | 未修 | 时装默认逻辑 |
 | 68 | 全英雄 | 通道 | 消息堵塞：进城时装大 bundle 灌爆可靠通道，pending 恒 100+，后续 S2C 全 defer | 已修复 | 根因=无发送窗口一把梭。稳定框架：channel.py 发送窗口(reliable_window=4)+有序队列+泵，RETX/GIVEUP/闪退/进城拥堵一起消（2026-08-22） |
 
