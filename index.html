@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WildFire 问题看板</title>
+<title>WildFire 问题/需求看板</title>
 <style>
   :root {
     --bg: #0f1117; --panel: #171a23; --border: #262b3a;
@@ -18,7 +18,7 @@
   .stat { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:10px 16px; }
   .stat b { font-size:20px; display:block; }
   .stat span { font-size:12px; color:var(--dim); }
-  .stat.red b { color:var(--red); } .stat.green b { color:var(--green); } .stat.amber b { color:var(--amber); } .stat.gray b { color:var(--gray); }
+  .stat.red b { color:var(--red); } .stat.green b { color:var(--green); } .stat.amber b { color:var(--amber); } .stat.gray b { color:var(--gray); } .stat.blue b { color:var(--blue); }
   h2 { font-size:16px; margin:20px 0 10px; color:var(--dim); border-left:3px solid var(--blue); padding-left:8px; }
   table { width:100%; border-collapse:collapse; background:var(--panel); border-radius:8px; overflow:hidden; }
   th { background:#1d2130; color:var(--dim); font-size:12px; text-align:left; padding:8px 10px; }
@@ -46,8 +46,8 @@
 </style>
 </head>
 <body>
-<h1>🐉 WildFire 问题看板 <button class="refresh" onclick="location.reload()">刷新</button></h1>
-<div class="sub">共享看板 · 状态：还没做 → 有思路 → 正在开发 → 卡住了等会 → 待复测 → 已修复(+时间) · 点击表头排序</div>
+<h1>🐉 WildFire 问题/需求看板 <button class="refresh" onclick="location.reload()">刷新</button></h1>
+<div class="sub">共享看板 · 状态：还没做 → 有思路 → 正在开发 → 卡住了等会 → 待复测 → 已修复(+时间) · 需求见「需求（新功能）」表 · 点击表头排序</div>
 
 <div class="stats" id="stats"></div>
 <div id="board"></div>
@@ -126,6 +126,9 @@ const BOARD = {
     {id:67, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'默认时装/未说明时装的英雄会随机给一个时装', note:'应改为默认时装'},
 
   ],
+  req: [
+    {id:'R1', req:'竞技场1v1 AI', desc:'竞技场 1v1 模式支持 AI 对手（人机对战）', st:'todo', note:'关联：练习场假人 + Y 键 AI、1v1_* AI 树'},
+  ],
   done: [
     {hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', fix:'移除打中木桩预约800反击（官方木桩=靶子不掉血）', commit:'072970d', time:'08-22 14:26'},
     {hero:'里特', hid:18, skill:'ML', desc:'普攻丢不出投掷物', fix:'attack_volume_source_server 回推', commit:'ee5de5b', time:'08-21 00:01'},
@@ -159,7 +162,18 @@ function _cmp(a, b, key) {
   if (key === 'hid') return _heroHid(a) - _heroHid(b);
   if (key === 'pri') return (a.pri == null ? 9 : a.pri) - (b.pri == null ? 9 : b.pri);
   if (key === 'skill') return String(a.skill||'').localeCompare(String(b.skill||''), 'zh-Hans-CN');
+  if (key === 'req') return String(a.req||'').localeCompare(String(b.req||''), 'zh-Hans-CN') || _reqId(a) - _reqId(b);
+  if (key === 'id') {
+    const na = _reqId(a), nb = _reqId(b);
+    return na - nb;
+  }
   return (a.id || 0) - (b.id || 0);
+}
+
+function _reqId(r) {
+  if (r.id == null) return 0;
+  const n = parseInt(String(r.id).replace(/\D/g, ''), 10);
+  return isNaN(n) ? 0 : n;
 }
 
 function sortRows(list) {
@@ -188,12 +202,21 @@ function priBadge(p) {
 function render() {
   const stats = document.getElementById('stats');
   stats.innerHTML =
+    '<div class="stat blue"><b>' + BOARD.req.length + '</b><span>需求</span></div>' +
     '<div class="stat red"><b>' + BOARD.open.length + '</b><span>未修复</span></div>' +
     '<div class="stat green"><b>' + BOARD.done.length + '</b><span>已修复</span></div>' +
     '<div class="stat gray"><b>' + BOARD.drop.length + '</b><span>已放弃</span></div>';
 
   const b = document.getElementById('board');
-  let html = '<h2>未修复问题（' + BOARD.open.length + '）</h2>';
+  let html = '<h2>需求（新功能）（' + BOARD.req.length + '）</h2>';
+  html += '<table><tr>' + thSort('id', '#') + thSort('req', '需求') + '<th>描述</th><th>状态</th><th>备注</th></tr>';
+  sortRows(BOARD.req).forEach(r => {
+    html += '<tr><td>' + r.id + '</td><td><b>' + r.req + '</b></td><td>' + r.desc + '</td>' +
+      '<td>' + badge(r.st || 'todo') + '</td><td class="note">' + (r.note||'') + '</td></tr>';
+  });
+  html += '</table>';
+
+  html += '<h2>未修复问题（' + BOARD.open.length + '）</h2>';
   html += '<table><tr>' + thSort('pri', '优先') + thSort('id', '#') + thSort('hero', '英雄') + thSort('skill', '技能') + '<th>现象</th><th>状态</th><th>备注</th></tr>';
   sortRows(BOARD.open).forEach(r => {
     html += '<tr><td>' + priBadge(r.pri) + '</td><td>' + r.id + '</td><td>' + r.hero + ' <span class="hero-tag">' + r.hid + '</span></td>' +
