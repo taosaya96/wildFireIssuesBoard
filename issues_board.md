@@ -45,7 +45,7 @@
 
 | # | 需求 | 描述 | 状态 | 备注 |
 |---|---|---|---|---|
-| R1 | 竞技场1v1 AI | 竞技场 1v1 模式支持 AI 对手（人机对战） | 正在开发 | 范围=练习场的AI：假人挂官方 1v1 行为树（`1v1_*` AI）。已实现：客户端本地造 AI 假人（PracticeAIHero）+ btname 注入 + Y 键挂树（38aq），实验 overlay `practice_ai_local_1v1`（未启用），规避上次 dens 闪退。解包定论（8-23）：官方 87 个 btname 树在客户端一个都不存在（matched=0），res 官方名是推塔占位副本(187385B)跑不动。方案 A（拍板）：放弃还原官方名，530 棵 duel_skill 对战树（找敌+追逐）全部署 res；假人 btname=`1v1_simple_03AI`(=meta_1130 对战树，已确认)。待实测：完全重开客户端后 Y 键假人会自己找/打。复现/验收见 docs/kb/features/practice-ai-dummy.md |
+| R1 | 竞技场1v1 AI | 竞技场 1v1 模式支持 AI 对手（人机对战） | 正在开发 | 范围=练习场的AI：假人挂官方 1v1 行为树（`1v1_*` AI）。已实现：客户端本地造 AI 假人（PracticeAIHero）+ btname 注入 + Y 键挂树（38aq），实验 overlay `practice_ai_local_1v1`（未启用），规避上次 dens 闪退。解包定论（8-23）：官方 87 个 btname 树在客户端一个都不存在（matched=0）。已还原文件名：87 个官方名全部填上对战树替代 187KB 推塔占位（0/87 占位清零，XML 全合法），模板 meta_1130/1127/1144 按难度填满；假人 btname=`1v1_simple_03AI`(=meta_1130，已确认加载+执行 SUCCESS)。待实测：完全重开客户端后 Y 键假人是否自己找/打（树已 SUCCESS 但不动的根因待 watch4b 诊断确认）。复现/验收见 docs/kb/features/practice-ai-dummy.md |
 
 ## 未修复问题
 
