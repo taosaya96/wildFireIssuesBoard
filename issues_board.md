@@ -45,7 +45,7 @@
 
 | # | 需求 | 描述 | 状态 | 备注 |
 |---|---|---|---|---|
-| R1 | 竞技场1v1 AI | 竞技场 1v1 模式支持 AI 对手（人机对战） | 还没做 | 关联：练习场假人 + Y 键 AI、`1v1_*` AI 树 |
+| R1 | 竞技场1v1 AI | 竞技场 1v1 模式支持 AI 对手（人机对战） | 正在开发 | 范围=练习场的AI：假人挂官方 1v1 行为树（`1v1_*` AI）。服务端已实现 btname 解析 + `start_skill_ai` 推包 + 实验 overlay（`practice_ai_1v1_bt`，未启用）。卡点：dens4(AIHero)/abs=299 未实锤，须实测。复现/验收见 docs/kb/features/practice-ai-dummy.md |
 
 ## 未修复问题
 
