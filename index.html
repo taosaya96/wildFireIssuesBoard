@@ -122,7 +122,7 @@ const BOARD = {
     {id:64, pri:1, hero:'南', hid:75, skill:'E', desc:'屏障无法召唤', note:'屏障未生成'},
     {id:65, pri:1, hero:'南', hid:75, skill:'SP', desc:'无法正常添加BUFF', note:'BUFF丢失'},
     {id:66, pri:1, hero:'莲', hid:77, skill:'R', desc:'投掷物未生成（R是弹道技能非BUFF）', note:'cdata: avtype=ball, ball_model=char/heros/0001/a1.model, 无state_info；归类投掷物未生成'},
-    {id:69, pri:1, hero:'全英雄', hid:'', skill:'装备', desc:'装备光环脚底特效', note:'源码定案：auras fullIndex=20(18+2)，PYTHON值=var-len+pickle0；已改entityProperty(0xC0|20)+_enc_python，待重启验证', st:'stuck'},
+    {id:69, pri:1, hero:'全英雄', hid:'', skill:'装备', desc:'装备光环脚底特效', note:'定案：auras fullIndex=20，但entityProperty推PYTHON实测闪退(同updateEntity)；PYTHON只能create blob，需recreate。已回退combat_state兜底', st:'stuck'},
     {id:67, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'默认时装/未说明时装的英雄会随机给一个时装', note:'应改为默认时装'},
 
   ],
