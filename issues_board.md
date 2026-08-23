@@ -45,7 +45,7 @@
 
 | # | 需求 | 描述 | 状态 | 备注 |
 |---|---|---|---|---|
-| R1 | 竞技场1v1 AI | 竞技场 1v1 模式支持 AI 对手（人机对战） | 正在开发 | 范围=练习场的AI：假人挂官方 1v1 行为树（`1v1_*` AI）。服务端已实现 btname 解析 + `start_skill_ai` 推包，实验 overlay `practice_ai_1v1_bt` **已启用**（切 AIHero + 挂树 + 关 800 counter），桩测全路径通过。卡点：dens4(AIHero)/abs=299 未实锤，须实测。复现/验收见 docs/kb/features/practice-ai-dummy.md |
+| R1 | 竞技场1v1 AI | 竞技场 1v1 模式支持 AI 对手（人机对战） | 正在开发 | 范围=练习场的AI：假人挂官方 1v1 行为树（`1v1_*` AI）。实测：dens4(AIHero) create 闪退已回滚（38ap，客户端收到 tid=4 不 ACK→GIVEUP，dens 未实锤=推算）。改走保命 Hero25 + `start_skill_ai` 直挂，先实锤 Hero 客户端类对该方法的响应。详见 docs/kb/features/practice-ai-dummy.md |
 
 ## 未修复问题
 
