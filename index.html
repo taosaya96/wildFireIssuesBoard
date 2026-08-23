@@ -127,7 +127,7 @@ const BOARD = {
 
   ],
   req: [
-    {id:'R1', req:'竞技场1v1 AI', desc:'竞技场 1v1 模式支持 AI 对手（人机对战）', st:'doing', note:'范围=练习场的AI：假人挂官方 1v1 行为树（1v1_* AI）。服务端已实现 btname 解析 + start_skill_ai 推包 + 实验 overlay（practice_ai_1v1_bt，未启用）。卡点：dens4/abs 未实锤，须实测'},
+    {id:'R1', req:'竞技场1v1 AI', desc:'竞技场 1v1 模式支持 AI 对手（人机对战）', st:'doing', note:'范围=练习场的AI：假人挂官方 1v1 行为树（1v1_* AI）。服务端已实现 btname 解析 + start_skill_ai 推包，实验 overlay practice_ai_1v1_bt 已启用（切 AIHero + 挂树 + 关 800 counter），桩测全路径通过。卡点：dens4/abs 未实锤，须实测'},
   ],
   done: [
     {hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', fix:'移除打中木桩预约800反击（官方木桩=靶子不掉血）', commit:'072970d', time:'08-22 14:26'},
