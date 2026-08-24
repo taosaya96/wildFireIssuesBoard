@@ -116,7 +116,7 @@
 | 65 | 南(75) | SP | 无法正常添加BUFF | 未修 | BUFF丢失 |
 | 66 | 莲(77) | R | 投掷物未生成（R是弹道技能，非BUFF） | 未修 | cdata: avtype=ball, ball_model=char/heros/0001/a1.model, 无state_info；归类投掷物/召唤物未生成批次 |
 | 67 | 全英雄 | 时装 | 默认时装/未说明时装的英雄会随机给一个时装，应改为默认时装 | 未修 | 时装默认逻辑 |
-| 69 | 全英雄 | 装备 | 装备光环脚底特效 + 装备/天赋被动技能 | 已修复 | 逆向定案：86/87/153脚底特效=combat_state 177/179/18909 effect(带buff图标,原版)。EED反编译出26件特效：aura常驻13件+use_state主动4件+passive_state被动9件(18891不屈血空免死=倒地后起身)。已实现aura+passive买装常驻推combat_state；use_state主动释放需按键C2S(待做) |
+| 69 | 全英雄 | 装备 | 装备光环脚底特效 + 装备/天赋被动技能 | 正在开发 | 逆向定案：86/87/153脚底特效=combat_state 177/179/18909 effect(带buff图标,原版)。EED反编译出26件特效：aura常驻13件+use_state主动4件+passive_state被动9件(18891不屈血空免死=倒地后起身)。已实现aura+passive买装常驻推combat_state；use_state主动释放需按键C2S(待做) |
 
 ## 已修复
 
