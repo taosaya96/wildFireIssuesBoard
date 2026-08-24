@@ -127,7 +127,7 @@ const BOARD = {
 
   ],
   req: [
-    {id:'R1', req:'竞技场1v1 AI', desc:'竞技场 1v1 模式支持 AI 对手（人机对战）', st:'doing', note:'已还原文件名：87个官方btname全部填上对战树(占位清零,XML合法)，模板meta_1130/1127/1144按难度填满；假人btname=1v1_simple_03AI(=meta_1130，已确认加载+SUCCESS)。行为树全量挖出(8-24)：bag 1185棵全解(明文XML非pyc)，src补19棵，285权威名res 100%覆盖(+198)，res命名树102->300。不动根因实锤+修复(8-24)：所有types.MethodType hook缺self参数→绑定后一调用TypeError→CheckDistance全崩→技能/追击分支全失败→落回Wander不攻击。已修：distanceTo/chaseNavigate/onChaseNavigate/iUseSkill hook补self+立即生效；speed 3.0->6.0匹配玩家；is_offline_ai=True本地施法(无cell)。实测通过：假人会追击(nav=3 CHASE moving=True)+主动放技能攻击。遗留：①AI打不到玩家(命中/伤害链路)②玩家打AI无硬直/眩晕'},
+    {id:'R1', req:'竞技场1v1 AI', desc:'竞技场 1v1 模式支持 AI 对手（人机对战）', st:'doing', note:'已还原文件名：87个官方btname全部填上对战树(占位清零,XML合法)，模板meta_1130/1127/1144按难度填满；假人btname=1v1_simple_03AI(=meta_1130，已确认加载+SUCCESS)。行为树全量挖出(8-24)：bag 1185棵全解(明文XML非pyc)，src补19棵，285权威名res 100%覆盖(+198)，res命名树102->300。不动根因实锤+修复(8-24)：所有types.MethodType hook缺self参数→绑定后一调用TypeError→CheckDistance全崩→技能/追击分支全失败→落回Wander不攻击。已修：distanceTo/chaseNavigate/onChaseNavigate/iUseSkill hook补self+立即生效；speed 3.0->6.0匹配玩家；is_offline_ai=True本地施法(无cell)。实测通过：假人会追击(nav=3 CHASE moving=True)+主动放技能攻击。互打双断根因+切假服方案(8-24实施,待实测)：本地假人无cell假服不认识→AI打不到玩家+玩家打AI无硬直；方案=假服上户口push ShadowCreature dens39同款(安全)+hero_type对手英雄+camp敌(2)+start_skill_ai挂1v1树,iUseSkill走cell.requestUseSkill(有cell→玩家掉血)。已实施routing._practice_push_ai_dummy+overlay practice_ai_dummy_push_1v1(active已切,关本地)。待实测：重启假服+客户端自动推假人+挂树(无需按Y),验证互打;失败回滚active=[]'},
   ],
   done: [
     {hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', fix:'移除打中木桩预约800反击（官方木桩=靶子不掉血）', commit:'072970d', time:'08-22 14:26'},
