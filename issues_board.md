@@ -117,7 +117,7 @@
 | 66 | 莲(77) | R | 投掷物未生成（R是弹道技能，非BUFF） | 未修 | cdata: avtype=ball, ball_model=char/heros/0001/a1.model, 无state_info；归类投掷物/召唤物未生成批次 |
 | 67 | 全英雄 | 时装 | 默认时装/未说明时装的英雄会随机给一个时装，应改为默认时装 | 待复测 | 根因两层已定位（详见 wf_project docs/kb/features/fashion-shape.md）：①代码 hub/fashion/wardrobe.py `_practice_default_fashion_for_hero` 取 by_hero 表 ids[0] 冒充默认外观（表已滤 default_fashion，旧「回退默认套」分支永不命中）→ 无装备英雄被硬塞真实时装；②历史会话把 9 英雄非默认指针固化进 account_profile（saya.json），login 重放+city merge 每次进城回放。已修：兜底默认返回 []（fashions=[] = 官方 fashion=0 默认外观语义，实机日志验证行为/物理正常；回滚开关 practice_hero_default_look=false）+ 一次性档案复位工具 `python tools/mercury_fake/repair_default_fashions.py --apply`（须停服后跑，防运行中会话回写覆盖；dry-run 已验证 9 英雄全中）。提交 1144b45 |
 | 69 | 全英雄 | 装备 | 装备光环脚底特效 + 装备/天赋被动技能 | 正在开发 | 逆向定案：86/87/153脚底特效=combat_state 177/179/18909 effect(带buff图标,原版)。EED反编译出26件特效：aura常驻13件+use_state主动4件+passive_state被动9件(18891不屈血空免死=倒地后起身)。已实现aura+passive买装常驻推combat_state；use_state主动释放需按键C2S(待做) |
-| 70 | 全英雄 | 时装 | 塑形界面不能装备皮肤/染色/饰品（按钮灰/无响应） | 有思路 | 链路已定：on_btn_equip_click→setHeroFashionSuit(纯套装)/batchMakeFashionSuit(带染饰)；按钮门 _check_fashion 用 inv.countByID(INV_PAGE_FASHION)——染色/饰品「已拥有」权威=create_inv 时装页道具。根因=create_inv#54 被客户端静默丢弃→p.inv=None（38o 仪器证据：create_inv 0 次调用）。修法：修投递+服务器时装页灌染/饰道具 |
+| 70 | 全英雄 | 时装 | 塑形界面不能装备皮肤/染色/饰品（按钮灰/无响应） | 已修复 | 根因两层：①create_inv 的 ARRAY<CLIENT_ITEM_INFO> 客户端逐项 decode 字段错位→整条静默丢弃→inv=None→装备门全灰（36o 定性，重构时策略丢失）；②37系A2重推泵在hub重构时丢失。已修(bd3dd40)：恢复36o空容器create_inv(只发空物品建容器)+重推泵(≤3次,pending门闩)+分波回填；465件道具(2装备+463染饰)全走set_inv_item分波(该路径实测能进客户端)。验证:38o create_inv exit inv='Inventory',染色/饰品显示已拥有,可换装 |
 
 ## 已修复
 

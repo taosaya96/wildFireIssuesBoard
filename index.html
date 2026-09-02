@@ -124,7 +124,7 @@ const BOARD = {
     {id:66, pri:1, hero:'莲', hid:77, skill:'R', desc:'投掷物未生成（R是弹道技能非BUFF）', note:'cdata: avtype=ball, ball_model=char/heros/0001/a1.model, 无state_info；归类投掷物未生成'},
     {id:69, pri:1, hero:'全英雄', hid:'', skill:'装备', desc:'装备光环脚底特效+装备天赋被动', note:'逆向：86/87/153脚底特效=combat_state177/179/18909；EED26件=aura13+主动4+被动9(18891不屈血空免死)。已做aura+被动买装常驻推；主动释放待按键C2S', st:'doing'},
     {id:67, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'默认时装/未说明时装的英雄会随机给一个时装', note:'根因两层已修(1144b45)：①wardrobe._practice_default_fashion_for_hero 取ids[0]冒充默认外观(表已滤default_fashion,旧分支永不命中)；②历史会话固化9英雄非默认指针进account_profile每次进城回放。修复：兜底默认返回[](fashions[]=官方fashion=0语义,实机验证正常)+档案复位工具repair_default_fashions.py(--apply须停服后跑,dry-run已验证9英雄全中)。待停服应用+复测', st:'retest'},
-    {id:70, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'塑形界面不能装备皮肤/染色/饰品（按钮灰/无响应）', note:'链路已定：on_btn_equip_click→setHeroFashionSuit(纯套装)/batchMakeFashionSuit(带染饰)；按钮门 _check_fashion 用 inv.countByID(INV_PAGE_FASHION)——染色/饰品拥有权威=create_inv 时装页道具。根因=create_inv#54 被客户端静默丢弃→p.inv=None(38o仪器:create_inv 0次调用)。修法：修投递+服务器时装页灌染/饰道具', st:'doing'},
+    {id:70, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'塑形界面不能装备皮肤/染色/饰品（按钮灰/无响应）', note:'根因两层已修(bd3dd40)：①create_inv的ARRAY<CLIENT_ITEM_INFO>客户端逐项decode字段错位→整条静默丢弃→inv=None→装备门全灰(36o定性,重构时策略丢失)；②37系A2重推泵hub重构时丢失。已修：恢复36o空容器create_inv(只发空物品建容器)+重推泵(≤3次,pending门闩)+分波回填；465件道具全走set_inv_item分波(该路径实测能进客户端)。验证:38o create_inv exit inv=Inventory,染饰显示已拥有,可换装', st:'done'},
 
   ],
   req: [
