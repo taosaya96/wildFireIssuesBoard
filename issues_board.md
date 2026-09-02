@@ -117,11 +117,13 @@
 | 66 | 莲(77) | R | 投掷物未生成（R是弹道技能，非BUFF） | 未修 | cdata: avtype=ball, ball_model=char/heros/0001/a1.model, 无state_info；归类投掷物/召唤物未生成批次 |
 | 67 | 全英雄 | 时装 | 默认时装/未说明时装的英雄会随机给一个时装，应改为默认时装 | 待复测 | 根因两层已定位（详见 wf_project docs/kb/features/fashion-shape.md）：①代码 hub/fashion/wardrobe.py `_practice_default_fashion_for_hero` 取 by_hero 表 ids[0] 冒充默认外观（表已滤 default_fashion，旧「回退默认套」分支永不命中）→ 无装备英雄被硬塞真实时装；②历史会话把 9 英雄非默认指针固化进 account_profile（saya.json），login 重放+city merge 每次进城回放。已修：兜底默认返回 []（fashions=[] = 官方 fashion=0 默认外观语义，实机日志验证行为/物理正常；回滚开关 practice_hero_default_look=false）+ 一次性档案复位工具 `python tools/mercury_fake/repair_default_fashions.py --apply`（须停服后跑，防运行中会话回写覆盖；dry-run 已验证 9 英雄全中）。提交 1144b45 |
 | 69 | 全英雄 | 装备 | 装备光环脚底特效 + 装备/天赋被动技能 | 正在开发 | 逆向定案：86/87/153脚底特效=combat_state 177/179/18909 effect(带buff图标,原版)。EED反编译出26件特效：aura常驻13件+use_state主动4件+passive_state被动9件(18891不屈血空免死=倒地后起身)。已实现aura+passive买装常驻推combat_state；use_state主动释放需按键C2S(待做) |
+| 70 | 全英雄 | 时装 | 塑形界面不能装备皮肤/染色/饰品（按钮灰/无响应） | 有思路 | 链路已定：on_btn_equip_click→setHeroFashionSuit(纯套装)/batchMakeFashionSuit(带染饰)；按钮门 _check_fashion 用 inv.countByID(INV_PAGE_FASHION)——染色/饰品「已拥有」权威=create_inv 时装页道具。根因=create_inv#54 被客户端静默丢弃→p.inv=None（38o 仪器证据：create_inv 0 次调用）。修法：修投递+服务器时装页灌染/饰道具 |
 
 ## 已修复
 
 | # | 英雄 | 技能 | 现象 | 修复 | 提交 | 完成时间 |
 |---|---|---|---|---|---|---|
+| 71 | 全英雄 | 时装 | 主城时装UI右侧列表全空（皮肤+配饰+染色不显示），反复重进无效 | 四层根因：①QUALITY_SORT_RULE 缺 quality=5/None→排序比较器 ValueError 炸穿 Phase.enter（31系胶水38系重建时丢失→38n 移植恢复）②update_cleaner 读 p.inv（create_inv 被丢→inv=None→38p 容错）③染色/饰品本地注册表丢失（无对应S2C→38p 恢复）④GUI 双模块陷阱：游戏用驼峰名(FashionPhaseNew)导入，钩子须大小写无关多实例挂。详见 wf_project docs/kb/features/fashion-shape.md | eca78e7 | 09-02 23:59 |
 | 10 | 全英雄 | 技能 | 使用技能会扣固定800血 | 移除打中木桩预约800反击（官方木桩=靶子不掉血） | 072970d | 08-22 14:26 |
 | 68 | 全英雄 | 通道 | 消息堵塞：进城时装大 bundle 灌爆可靠通道，pending 恒 100+，后续 S2C 全 defer | 根因=无发送窗口一把梭。稳定框架：channel.py 发送窗口(reliable_window=4)+有序队列+泵，RETX/GIVEUP/闪退/进城拥堵一起消 | a7a01ef | 08-23 00:33 |
 | — | 里特(18) | ML | 普攻丢不出投掷物 | attack_volume_source_server 回推 | ee5de5b | 08-21 00:01 |
