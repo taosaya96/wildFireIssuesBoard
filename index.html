@@ -85,7 +85,7 @@ const BOARD = {
     {id:27, pri:1, hero:'哲罗', hid:34, skill:'SP', desc:'ML左键连招后镜头异常', note:'镜头异常'},
     {id:28, pri:1, hero:'阿兹瓦多', hid:36, skill:'R', desc:'镜头异常', note:'镜头异常'},
     {id:29, pri:1, hero:'阿兹瓦多', hid:36, skill:'SP', desc:'镜头异常', note:'镜头异常'},
-    {id:30, pri:0, hero:'全英雄', hid:'', skill:'回血', desc:'自动回血逻辑丢失', note:'全局回血'},
+    {id:30, pri:0, hero:'全英雄', hid:'', skill:'回血', desc:'自动回血逻辑丢失', note:'hp wire index=14 定案(39c 多候选一次区分隔离实验:候选[13..18]各推1000+index 每秒一推,端AI假人 tgt_hp=1014 点名;反例 idx13 推217次 tgt_hp仍993)+回血泵恢复(hpr=1 按公式+装备加成,锯齿循环实测 ai_tick打回1→regen+4/s 爬升)。绿字 NUM_HEAL 可选后续', st:'done'},
     {id:31, pri:1, hero:'阿兹瓦多', hid:36, skill:'技能', desc:'技能使用扣血设定丢失', note:'扣血设定'},
     {id:32, pri:1, hero:'阿兹瓦多', hid:36, skill:'F', desc:'回血设定丢失', note:'回血设定'},
     {id:33, pri:1, hero:'犹', hid:37, skill:'Q', desc:'月灵阵丢失', note:'陷阱未生成'},
