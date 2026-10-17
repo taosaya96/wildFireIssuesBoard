@@ -2,252 +2,76 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WildFire 问题/需求看板</title>
-<style>
-  :root {
-    --bg: #0f1117; --panel: #171a23; --border: #262b3a;
-    --text: #e6e8ee; --dim: #8b93a7;
-    --red: #f0564a; --amber: #e6a23c; --green: #4caf7d; --blue: #5b9df9; --gray: #6b7280;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:var(--bg); color:var(--text); font-family:'Segoe UI',system-ui,'Microsoft YaHei',sans-serif; padding:24px; }
-  h1 { font-size:22px; margin-bottom:4px; display:flex; align-items:center; gap:10px; }
-  .sub { color:var(--dim); font-size:13px; margin-bottom:20px; }
-  .stats { display:flex; gap:16px; margin-bottom:20px; flex-wrap:wrap; }
-  .stat { background:var(--panel); border:1px solid var(--border); border-radius:8px; padding:10px 16px; }
-  .stat b { font-size:20px; display:block; }
-  .stat span { font-size:12px; color:var(--dim); }
-  .stat.red b { color:var(--red); } .stat.green b { color:var(--green); } .stat.amber b { color:var(--amber); } .stat.gray b { color:var(--gray); } .stat.blue b { color:var(--blue); }
-  h2 { font-size:16px; margin:20px 0 10px; color:var(--dim); border-left:3px solid var(--blue); padding-left:8px; }
-  table { width:100%; border-collapse:collapse; background:var(--panel); border-radius:8px; overflow:hidden; }
-  th { background:#1d2130; color:var(--dim); font-size:12px; text-align:left; padding:8px 10px; }
-  th.th-sort { cursor:pointer; user-select:none; white-space:nowrap; }
-  th.th-sort:hover { color:var(--blue); }
-  td { padding:8px 10px; border-top:1px solid var(--border); font-size:13px; vertical-align:top; }
-  tr:hover td { background:#1b1f2c; }
-  .badge { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:600; white-space:nowrap; }
-  .b-todo { background:#262b3a; color:var(--gray); }
-  .b-idea { background:#1d2a45; color:var(--blue); }
-  .b-doing { background:#3a2d14; color:var(--amber); }
-  .b-stuck { background:#3a1d1a; color:var(--red); }
-  .b-retest { background:#1d3a2a; color:var(--green); }
-  .b-done { background:#1d2a22; color:var(--green); }
-  .b-drop { background:#262b3a; color:var(--gray); }
-  .b-p0 { background:#5c1f1a; color:#ff8a7a; }
-  .b-p1 { background:#3a2d14; color:var(--amber); }
-  .b-p2 { background:#262b3a; color:var(--gray); }
-  .commit { font-family:monospace; font-size:11px; color:var(--blue); }
-  .hero-tag { background:#262b3a; padding:1px 6px; border-radius:6px; font-size:11px; }
-  .note { color:var(--dim); font-size:12px; }
-  .footer { margin-top:30px; color:var(--dim); font-size:12px; text-align:center; }
-  .refresh { float:right; font-size:12px; color:var(--blue); cursor:pointer; border:1px solid var(--border); background:var(--panel); padding:4px 12px; border-radius:6px; }
-  .refresh:hover { background:#1d2130; }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#06070a">
+<meta name="color-scheme" content="dark">
+<title>开源，让野火蔓延至永恒</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="preload" as="image" href="assets/bg-city.webp">
+<link rel="preload" as="font" type="font/ttf" href="assets/wildfire-display.ttf">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>🐉 WildFire 问题/需求看板 <button class="refresh" onclick="location.reload()">刷新</button></h1>
-<div class="sub">共享看板 · 状态：还没做 → 有思路 → 正在开发 → 卡住了等会 → 待复测 → 已修复(+时间) · 需求见「需求（新功能）」表 · 点击表头排序</div>
+<canvas class="embers" id="embers" aria-hidden="true"></canvas>
+<div class="cursor-light" id="cursorLight" aria-hidden="true"></div>
 
-<div class="stats" id="stats"></div>
-<div id="board"></div>
-<div class="footer">茶需慢慢摇，心急则味散</div>
+<div class="stage" id="stage" aria-hidden="true">
+  <div class="slides" id="slides">
+    <div class="slide slide-city is-live" data-slide="0"></div>
+    <div class="slide slide-practice" data-slide="1"></div>
+    <div class="slide slide-wildfire" data-slide="2"></div>
+  </div>
+  <div class="beam"></div>
+  <div class="grade"></div>
+  <div class="vignette"></div>
+</div>
 
-<script>
-// ===== 看板数据（由 AI 登记时同步更新本块） =====
-const BOARD = {
-  open: [
-    {id:1, pri:1, hero:'小满', hid:30, skill:'MR', desc:'海鸥没有 → MR 释放失败', note:'海鸥(召唤物)未生成，MR 依赖海鸥目标'},
-    {id:2, pri:1, hero:'诺斯', hid:25, skill:'SP', desc:'瞬移到场地中央', note:'SP 位移目标点错误'},
-    {id:3, pri:1, hero:'诺斯', hid:25, skill:'R', desc:'镜头回到场地中央', note:'R 镜头控制异常'},
-    {id:4, pri:1, hero:'琳', hid:76, skill:'R', desc:'镜头异常', note:'R 镜头控制异常'},
-    {id:5, pri:1, hero:'琳', hid:76, skill:'SP', desc:'没有召回/加载冰墙', note:'SP 冰墙未生成/召回逻辑缺失'},
-    {id:6, pri:1, hero:'赤', hid:8, skill:'Q', desc:'镜头异常', note:'Q 镜头控制异常'},
-    {id:7, pri:1, hero:'苏洛', hid:3, skill:'R', desc:'镜头异常', note:'R 镜头控制异常'},
-    {id:8, pri:1, hero:'唐小藏', hid:12, skill:'SP', desc:'屏障没有召唤加载出来', note:'SP 屏障实体未生成'},
-    {id:9, pri:0, hero:'全英雄', hid:'', skill:'BUFF', desc:'BUFF特效缺失（技能/装备）', note:'VFX走stateKeys#18→add_state_effects；stateKeys wire崩客户端→改端本地双写(已通)；装备光环是aura机制不进buff栏。余：莲R缺状态、滚轮2格、装备光环待接', st:'stuck'},
-    {id:11, pri:2, hero:'唐小藏', hid:12, skill:'ML', desc:'弹射额外效果没有', note:'看技能描述'},
-    {id:12, pri:2, hero:'唐小藏', hid:12, skill:'MR', desc:'丢失持续紧箍敌人效果', note:'紧箍效果缺失'},
-    {id:13, pri:1, hero:'龛', hid:13, skill:'E', desc:'丢失摆放陷阱沼泽', note:'E技能陷阱沼泽未生成'},
-    {id:14, pri:2, hero:'龛', hid:13, skill:'攻击', desc:'丢失攻击他人中毒效果', note:'中毒效果缺失'},
-    {id:15, pri:2, hero:'玖味', hid:15, skill:'SP', desc:'丢食物没有', note:'SP丢食物无表现'},
-    {id:16, pri:2, hero:'爵士', hid:19, skill:'Q', desc:'无法放置音符', note:'Q音符放置失败'},
-    {id:17, pri:2, hero:'爵士', hid:19, skill:'M3', desc:'滚轮CD异常久', note:'M3滚轮CD异常'},
-    {id:18, pri:2, hero:'亚瑟王', hid:22, skill:'SP', desc:'变成了主动技能，不对', note:'看技能描述，应为特殊机制'},
-    {id:19, pri:2, hero:'亚瑟王', hid:22, skill:'MR/E', desc:'丢失特殊效果', note:'看技能描述'},
-    {id:20, pri:2, hero:'亚斯塔路', hid:24, skill:'E', desc:'路障丢失物理阻挡效果', note:'路障无物理阻挡'},
-    {id:21, pri:2, hero:'亚斯塔路', hid:24, skill:'R', desc:'无法正常"装人"', note:'R技能装人异常'},
-    {id:22, pri:1, hero:'钟馗', hid:28, skill:'技能', desc:'击落的魂珠落地直接消失', note:'魂珠无存续'},
-    {id:23, pri:1, hero:'钟馗', hid:28, skill:'SP', desc:'永远只回到场地中央，非技能描述原逻辑', note:'SP位移逻辑错误'},
-    {id:24, pri:2, hero:'伊希切尔', hid:29, skill:'R', desc:'选左边恶魔攻击技能牌丢失伤害', note:'伤害丢失'},
-    {id:25, pri:1, hero:'玲珑', hid:32, skill:'MR', desc:'陷阱丢失', note:'陷阱未生成'},
-    {id:26, pri:1, hero:'巴哈', hid:33, skill:'E', desc:'陷阱丢失', note:'陷阱未生成'},
-    {id:27, pri:1, hero:'哲罗', hid:34, skill:'SP', desc:'ML左键连招后镜头异常', note:'镜头异常'},
-    {id:28, pri:1, hero:'阿兹瓦多', hid:36, skill:'R', desc:'镜头异常', note:'镜头异常'},
-    {id:29, pri:1, hero:'阿兹瓦多', hid:36, skill:'SP', desc:'镜头异常', note:'镜头异常'},
-    {id:30, pri:0, hero:'全英雄', hid:'', skill:'回血', desc:'自动回血逻辑丢失', note:'hp wire index=14 定案(39c 多候选一次区分隔离实验:候选[13..18]各推1000+index 每秒一推,端AI假人 tgt_hp=1014 点名;反例 idx13 推217次 tgt_hp仍993)+回血泵恢复(hpr=1 按公式+装备加成,锯齿循环实测 ai_tick打回1→regen+4/s 爬升)。绿字 NUM_HEAL 可选后续', st:'done'},
-    {id:31, pri:1, hero:'阿兹瓦多', hid:36, skill:'技能', desc:'技能使用扣血设定丢失', note:'扣血设定'},
-    {id:32, pri:1, hero:'阿兹瓦多', hid:36, skill:'F', desc:'回血设定丢失', note:'回血设定'},
-    {id:33, pri:1, hero:'犹', hid:37, skill:'Q', desc:'月灵阵丢失', note:'陷阱未生成'},
-    {id:34, pri:1, hero:'犹', hid:37, skill:'SP', desc:'忍犬逻辑不正常', note:'看技能设定描述'},
-    {id:35, pri:1, hero:'犹', hid:37, skill:'MR', desc:'羽月符丢出后消失', note:'投掷物无存续'},
-    {id:36, pri:2, hero:'阿和', hid:39, skill:'R', desc:'会让阿和移动，不正常', note:'R位移异常'},
-    {id:37, pri:2, hero:'吉格', hid:40, skill:'攻击', desc:'累计敌方眩晕值逻辑丢失', note:'眩晕累计'},
-    {id:38, pri:2, hero:'吉格', hid:40, skill:'MR', desc:'第一次无击中音效，CD好第二次出不来', note:'MR异常'},
-    {id:39, pri:1, hero:'玛姬', hid:42, skill:'R', desc:'魔法盒无法召唤，无法后续控制移动', note:'召唤物未生成'},
-    {id:40, pri:1, hero:'惠美', hid:43, skill:'E', desc:'鲨鱼陷阱无法召唤', note:'陷阱未生成'},
-    {id:41, pri:1, hero:'莉奥拉', hid:44, skill:'SP', desc:'防护力场无法召唤', note:'力场未生成'},
-    {id:42, pri:0, hero:'莉奥拉', hid:44, skill:'E', desc:'升空高度异常，重力过重', note:'重力异常(全局)'},
-    {id:43, pri:0, hero:'原子', hid:45, skill:'SP', desc:'起飞正常但快速下降，重力过重', note:'重力异常(全局)'},
-    {id:44, pri:0, hero:'原子', hid:45, skill:'R', desc:'起飞正常但快速下降，重力过重', note:'重力异常(全局)'},
-    {id:45, pri:2, hero:'阿努比斯', hid:49, skill:'E', desc:'无法穿墙移动到目标边上', note:'看技能原描述'},
-    {id:46, pri:1, hero:'阿努比斯', hid:49, skill:'E', desc:'镜头异常', note:'镜头异常'},
-    {id:47, pri:2, hero:'斯芬克斯', hid:50, skill:'R', desc:'丢失向前跳跃/伤害/变身逻辑', note:'R逻辑缺失'},
-    {id:48, pri:2, hero:'刚玉', hid:11, skill:'R', desc:'丢失怒气值设定逻辑', note:'怒气设定'},
-    {id:49, pri:2, hero:'秋山', hid:51, skill:'R', desc:'无法挑飞敌人，R无后续逻辑', note:'挑飞缺失'},
-    {id:50, pri:1, hero:'巴鲁波', hid:60, skill:'MR', desc:'召唤的小巴鲁波AI丢失', note:'召唤AI'},
-    {id:51, pri:1, hero:'巴鲁波', hid:60, skill:'E', desc:'召唤物丢失(治疗附近队友/陷阱)', note:'召唤物未生成'},
-    {id:52, pri:1, hero:'克拉拉', hid:61, skill:'蛇杖', desc:'蛇杖AI丢失', note:'召唤AI'},
-    {id:53, pri:0, hero:'闲青山', hid:62, skill:'SP', desc:'飞行下降速度异常过快', note:'重力异常(全局)'},
-    {id:54, pri:2, hero:'闲青山', hid:62, skill:'身后字', desc:'身后字丢失，关系R和T技能逻辑', note:'特效/逻辑缺失'},
-    {id:55, pri:1, hero:'卓尔', hid:63, skill:'MR', desc:'镜头异常', note:'镜头异常'},
-    {id:56, pri:1, hero:'莉莉娅', hid:65, skill:'SP', desc:'逻辑异常，疑似BUFF，BUFF表现也丢失', note:'BUFF丢失'},
-    {id:57, pri:0, hero:'拓仓', hid:66, skill:'E', desc:'挑飞敌人下落速度异常过快', note:'重力异常(全局)'},
-    {id:58, pri:1, hero:'贝狄威尔', hid:69, skill:'R', desc:'镜头异常，可能第一次正常后面不正常', note:'镜头异常'},
-    {id:59, pri:1, hero:'菲欧娜', hid:71, skill:'R', desc:'恢复效果丢失', note:'恢复丢失'},
-    {id:60, pri:1, hero:'夜皇后', hid:72, skill:'R', desc:'无法召唤虚空子弹(台球)', note:'召唤物未生成'},
-    {id:61, pri:1, hero:'布伦希尔德', hid:73, skill:'MR', desc:'无法放置溜溜球，无法用SP回溜溜球地点', note:'放置物未生成'},
-    {id:62, pri:1, hero:'菲丽丝', hid:74, skill:'E/MR', desc:'陷阱布置全部丢失', note:'陷阱未生成'},
-    {id:63, pri:2, hero:'南', hid:75, skill:'Q', desc:'无法用二段移动到Q技能位置', note:'Q二段缺失'},
-    {id:64, pri:1, hero:'南', hid:75, skill:'E', desc:'屏障无法召唤', note:'屏障未生成'},
-    {id:65, pri:1, hero:'南', hid:75, skill:'SP', desc:'无法正常添加BUFF', note:'BUFF丢失'},
-    {id:66, pri:1, hero:'莲', hid:77, skill:'R', desc:'投掷物未生成（R是弹道技能非BUFF）', note:'cdata: avtype=ball, ball_model=char/heros/0001/a1.model, 无state_info；归类投掷物未生成'},
-    {id:69, pri:1, hero:'全英雄', hid:'', skill:'装备', desc:'装备光环脚底特效+装备天赋被动', note:'逆向：86/87/153脚底特效=combat_state177/179/18909；EED26件=aura13+主动4+被动9(18891不屈血空免死)。已做aura+被动买装常驻推；主动释放待按键C2S', st:'doing'},
-    {id:67, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'默认时装/未说明时装的英雄会随机给一个时装', note:'根因两层已修(1144b45)：①wardrobe._practice_default_fashion_for_hero 取ids[0]冒充默认外观(表已滤default_fashion,旧分支永不命中)；②历史会话固化9英雄非默认指针进account_profile每次进城回放。2026-09-24:实测发现dbmgr.load_profile是SQLite优先,只修JSON无效(ht=3仍推旧值900014/160203实锤)；工具加--sqlite直修wildfire.sqlite account_kv blob，--apply --sqlite已落库(先杀客户端断会话防回写)，重启验证ht=3旧推送detail=[160203]已消失。剩进城看模:wardrobe把默认套900016展开成fashions=[101,180404]推送,是否默认外观需人眼确认。详见fashion-shape.md', st:'retest'},
-    {id:70, pri:0, hero:'全英雄', hid:'', skill:'时装', desc:'塑形界面不能装备皮肤/染色/饰品（按钮灰/无响应）', note:'根因两层已修(bd3dd40)：①create_inv的ARRAY<CLIENT_ITEM_INFO>客户端逐项decode字段错位→整条静默丢弃→inv=None→装备门全灰(36o定性,重构时策略丢失)；②37系A2重推泵hub重构时丢失。已修：恢复36o空容器create_inv(只发空物品建容器)+重推泵(≤3次,pending门闩)+分波回填；465件道具全走set_inv_item分波(该路径实测能进客户端)。验证:38o create_inv exit inv=Inventory,染饰显示已拥有,可换装', st:'done'},
+<main class="poster">
+  <div class="frame" aria-hidden="true">
+    <span class="corner c-tl"></span>
+    <span class="corner c-tr"></span>
+    <span class="corner c-bl"></span>
+    <span class="corner c-br"></span>
+    <span class="frame-notch"></span>
+  </div>
 
-  ],
-  req: [
-    {id:'R1', req:'竞技场1v1 AI', desc:'竞技场 1v1 模式支持 AI 对手（人机对战）', st:'doing', note:'已还原文件名：87个官方btname全部填上对战树(占位清零,XML合法)，模板meta_1130/1127/1144按难度填满；假人btname=1v1_simple_03AI(=meta_1130，已确认加载+SUCCESS)。行为树全量挖出(8-24)：bag 1185棵全解(明文XML非pyc)，src补19棵，285权威名res 100%覆盖(+198)，res命名树102->300。不动根因实锤+修复(8-24)：所有types.MethodType hook缺self参数→绑定后一调用TypeError→CheckDistance全崩→技能/追击分支全失败→落回Wander不攻击。已修：distanceTo/chaseNavigate/onChaseNavigate/iUseSkill hook补self+立即生效；speed 3.0->6.0匹配玩家；is_offline_ai=True本地施法(无cell)。实测通过：假人会追击(nav=3 CHASE moving=True)+主动放技能攻击。互打双断根因+切假服方案(8-24实施,待实测)：本地假人无cell假服不认识→AI打不到玩家+玩家打AI无硬直；方案=假服上户口push ShadowCreature dens39同款(安全)+hero_type对手英雄+camp敌(2)+start_skill_ai挂1v1树,iUseSkill走cell.requestUseSkill(有cell→玩家掉血)。2026-09-24自动实测三项实锤(现方案=practice_ai_hero_stump_1v1 Hero25木桩,非ShadowCreature push)：1)假人对手模型可见 2)AI追击贴身+攻击判定盒上报(d2e 1.4/createAtkVolumeRequest ht=3) 3)AI打玩家真掉血(player_dmg 993->193/-800 ai_tick持续,HP钳1)。EditorConf auto_enter_practice=True自动全程。剩:4)玩家打假人需人手30秒(硬件级输入注入无效);atk volume每段no dmg命中结算未接;hp push DISABLED(28aq隔离)待解除。证据:wf_project docs/kb/features/practice-ai-dummy.md 39a节'},
-  ],
-  done: [
-    {hero:'全英雄', hid:'', skill:'时装', desc:'主城时装UI右侧列表全空(皮肤+配饰+染色不显示),反复重进无效', fix:'四层根因：①QUALITY_SORT_RULE缺quality=5/None→排序ValueError炸穿Phase.enter(31系胶水38系重建丢失→38n恢复)②update_cleaner读p.inv(create_inv被丢→inv=None→38p容错)③染色/饰品本地注册表丢失(无对应S2C→38p恢复)④GUI双模块陷阱:游戏用驼峰名(FashionPhaseNew)导入,钩子须大小写无关多实例挂。详见wf_project docs/kb/features/fashion-shape.md', commit:'eca78e7', time:'09-02 23:59'},
-    {hero:'全英雄', hid:'', skill:'技能', desc:'使用技能会扣固定800血', fix:'移除打中木桩预约800反击（官方木桩=靶子不掉血）', commit:'072970d', time:'08-22 14:26'},
-    {hero:'里特', hid:18, skill:'ML', desc:'普攻丢不出投掷物', fix:'attack_volume_source_server 回推', commit:'ee5de5b', time:'08-21 00:01'},
-    {hero:'里特', hid:18, skill:'ML', desc:'普攻连点被拒（CD 整除 1 秒）', fix:'used=False', commit:'d605cca', time:'08-21 00:35'},
-    {hero:'里特', hid:18, skill:'ML', desc:'普攻间隔太快/移动取消', fix:'普攻设 CD 真实值', commit:'1d594e0', time:'08-22 01:35'},
-    {hero:'全英雄', hid:'', skill:'技能', desc:'CD 全错（路径 bug）', fix:'parents[4] 路径修复', commit:'0d1041c', time:'08-22 01:14'},
-    {hero:'拓仓', hid:66, skill:'R', desc:'小弟到期不消失', fix:'leaveAoI×2 VARIABLE', commit:'88a5fef', time:'08-20 00:09'},
-    {hero:'拓仓', hid:66, skill:'R', desc:'小弟模型错', fix:'hero_type sphere_typ 反查', commit:'3c2d646', time:'08-20 21:27'},
-    {hero:'玛姬', hid:42, skill:'大变活人', desc:'丢失变身', fix:'ct=1 controlEntity', commit:'868934f', time:'08-20 22:03'},
-    {hero:'全英雄', hid:'', skill:'通道', desc:'消息堵塞：进城时装大bundle灌爆可靠通道，pending恒100+，后续S2C全defer', fix:'稳定框架：channel.py发送窗口(reliable_window=4)+有序队列+泵，RETX/GIVEUP/闪退/进城拥堵一起消', commit:'a7a01ef', time:'08-23 00:33'},
-  ],
-  drop: [
-    {hero:'里特', hid:18, skill:'ML', desc:'疯狂点击部分被拒', reason:'客户端动画 ~0.9s 资源设定（官方如此）'},
-  ]
-};
+  <section class="title-wrap" id="titleWrap">
+    <div class="heat" aria-hidden="true"></div>
+    <div class="light-streak" aria-hidden="true"></div>
 
-function badge(status) {
-  const map = {todo:'还没做', idea:'有思路', doing:'正在开发', stuck:'卡住了等会', retest:'待复测', done:'已修复', drop:'已放弃'};
-  const cls = {todo:'b-todo', idea:'b-idea', doing:'b-doing', stuck:'b-stuck', retest:'b-retest', done:'b-done', drop:'b-drop'};
-  return '<span class="badge ' + (cls[status]||'b-todo') + '">' + (map[status]||'还没做') + '</span>';
-}
+    <div class="emblem" aria-hidden="true">
+      <span class="emblem-rule left"></span>
+      <span class="emblem-core"></span>
+      <span class="emblem-rule right"></span>
+    </div>
 
-// ===== 排序 =====
-// key: id | hero | hid | skill ; dir: 1 升序, -1 降序
-let sortState = { key: 'pri', dir: 1 };
+    <h1 class="title" aria-label="开源，让野火蔓延至永恒">
+      <span class="eyebrow" aria-hidden="true">
+        <span class="eyebrow-text"><span class="glyph" style="--i:0">开</span><span class="glyph" style="--i:1">源</span><span class="glyph glyph-comma" style="--i:2">，</span></span>
+      </span>
+      <span class="display" aria-hidden="true">
+        <span class="part part-a"><span class="glyph" style="--i:3">让</span><span class="glyph" style="--i:4">野</span><span class="glyph" style="--i:5">火</span><span class="glyph" style="--i:6">蔓</span><span class="glyph" style="--i:7">延</span></span><span class="part part-b"><span class="glyph" style="--i:8">至</span><span class="glyph" style="--i:9">永</span><span class="glyph" style="--i:10">恒</span></span>
+      </span>
+    </h1>
 
-function _heroHid(r) { return parseInt(r.hid) || 0; }
+    <div class="emberline" aria-hidden="true"></div>
+  </section>
 
-function _cmp(a, b, key) {
-  if (key === 'hero') return String(a.hero||'').localeCompare(String(b.hero||''), 'zh-Hans-CN') || (_heroHid(a) - _heroHid(b));
-  if (key === 'hid') return _heroHid(a) - _heroHid(b);
-  if (key === 'pri') return (a.pri == null ? 9 : a.pri) - (b.pri == null ? 9 : b.pri);
-  if (key === 'skill') return String(a.skill||'').localeCompare(String(b.skill||''), 'zh-Hans-CN');
-  if (key === 'req') return String(a.req||'').localeCompare(String(b.req||''), 'zh-Hans-CN') || _reqId(a) - _reqId(b);
-  if (key === 'id') {
-    const na = _reqId(a), nb = _reqId(b);
-    return na - nb;
-  }
-  return (a.id || 0) - (b.id || 0);
-}
+  <div class="hud" id="hud">
+    <span class="hud-cap" aria-hidden="true"></span>
+    <span class="hud-rail" aria-hidden="true"></span>
+    <div class="hud-dots" id="dots" role="group" aria-label="背景切换">
+      <button class="hexdot is-live" type="button" data-go="0" aria-label="城市"></button>
+      <button class="hexdot" type="button" data-go="1" aria-label="训练场"></button>
+      <button class="hexdot" type="button" data-go="2" aria-label="野火"></button>
+    </div>
+  </div>
+</main>
 
-function _reqId(r) {
-  if (r.id == null) return 0;
-  const n = parseInt(String(r.id).replace(/\D/g, ''), 10);
-  return isNaN(n) ? 0 : n;
-}
+<div class="grain" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
+<div class="curtain" id="curtain" aria-hidden="true"></div>
 
-function sortRows(list) {
-  const arr = list.slice();
-  arr.sort(function(a, b) { return _cmp(a, b, sortState.key) * sortState.dir; });
-  return arr;
-}
-
-function setSort(key) {
-  if (sortState.key === key) { sortState.dir = -sortState.dir; }
-  else { sortState.key = key; sortState.dir = 1; }
-  render();
-}
-
-function thSort(key, label) {
-  const arrow = sortState.key === key ? (sortState.dir === 1 ? ' ▲' : ' ▼') : ' ⇅';
-  return '<th class="th-sort" onclick="setSort(\'' + key + '\')" title="点击排序">' + label + arrow + '</th>';
-}
-
-function priBadge(p) {
-  const map = {0:'P0', 1:'P1', 2:'P2'};
-  const cls = {0:'b-p0', 1:'b-p1', 2:'b-p2'};
-  return '<span class="badge ' + (cls[p]||'b-p2') + '">' + (map[p]||'P2') + '</span>';
-}
-
-function render() {
-  const stats = document.getElementById('stats');
-  stats.innerHTML =
-    '<div class="stat blue"><b>' + BOARD.req.length + '</b><span>需求</span></div>' +
-    '<div class="stat red"><b>' + BOARD.open.length + '</b><span>未修复</span></div>' +
-    '<div class="stat green"><b>' + BOARD.done.length + '</b><span>已修复</span></div>' +
-    '<div class="stat gray"><b>' + BOARD.drop.length + '</b><span>已放弃</span></div>';
-
-  const b = document.getElementById('board');
-  let html = '<h2>需求（新功能）（' + BOARD.req.length + '）</h2>';
-  html += '<table><tr>' + thSort('id', '#') + thSort('req', '需求') + '<th>描述</th><th>状态</th><th>备注</th></tr>';
-  sortRows(BOARD.req).forEach(r => {
-    html += '<tr><td>' + r.id + '</td><td><b>' + r.req + '</b></td><td>' + r.desc + '</td>' +
-      '<td>' + badge(r.st || 'todo') + '</td><td class="note">' + (r.note||'') + '</td></tr>';
-  });
-  html += '</table>';
-
-  html += '<h2>未修复问题（' + BOARD.open.length + '）</h2>';
-  html += '<table><tr>' + thSort('pri', '优先') + thSort('id', '#') + thSort('hero', '英雄') + thSort('skill', '技能') + '<th>现象</th><th>状态</th><th>备注</th></tr>';
-  sortRows(BOARD.open).forEach(r => {
-    html += '<tr><td>' + priBadge(r.pri) + '</td><td>' + r.id + '</td><td>' + r.hero + ' <span class="hero-tag">' + r.hid + '</span></td>' +
-      '<td><b>' + r.skill + '</b></td><td>' + r.desc + '</td>' +
-      '<td>' + badge(r.st || 'todo') + '</td><td class="note">' + (r.note||'') + '</td></tr>';
-  });
-  html += '</table>';
-
-  html += '<h2>已修复（' + BOARD.done.length + '）</h2>';
-  html += '<table><tr>' + thSort('hero', '英雄') + thSort('skill', '技能') + '<th>现象</th><th>修复</th><th>提交</th><th>完成时间</th></tr>';
-  sortRows(BOARD.done).forEach(r => {
-    html += '<tr><td>' + r.hero + (r.hid?' <span class="hero-tag">'+r.hid+'</span>':'') + '</td>' +
-      '<td><b>' + r.skill + '</b></td><td>' + r.desc + '</td><td>' + r.fix + '</td>' +
-      '<td class="commit">' + (r.commit||'') + '</td>' +
-      '<td class="note">' + (r.time||'') + '</td></tr>';
-  });
-  html += '</table>';
-
-  html += '<h2>已放弃（' + BOARD.drop.length + '）</h2>';
-  html += '<table><tr>' + thSort('hero', '英雄') + thSort('skill', '技能') + '<th>现象</th><th>原因</th></tr>';
-  sortRows(BOARD.drop).forEach(r => {
-    html += '<tr><td>' + r.hero + ' <span class="hero-tag">' + r.hid + '</span></td>' +
-      '<td><b>' + r.skill + '</b></td><td>' + r.desc + '</td><td class="note">' + r.reason + '</td></tr>';
-  });
-  html += '</table>';
-
-  b.innerHTML = html;
-}
-render();
-</script>
+<script src="main.js"></script>
 </body>
 </html>
